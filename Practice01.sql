@@ -22,11 +22,14 @@ WHERE manager_id IS NOT NULL AND
     commission_pct IS NULL AND
     salary  >= 3000;
 
-
+SELECT * FROM JOBS;
 -- 문제4.
--- 최고월급(max_salary)이 10000 이상인 업무의 이름(job_title)과
--- 최고월급(max_salary)을 최고월급의(max_salary) 내림차순(DESC)로 정렬하여 출력하세요. 
-
+-- 최고월급(max_salary)이 10000 이상인 업무의 이름(job_title)과 최고월급(max_salary)을
+-- 최고월급의(max_salary) 내림차순(DESC)로 정렬하여 출력하세요. 
+SELECT job_title, max_salary
+FROM jobs
+WHERE max_salary >= 10000
+ORDER BY max_salary DESC;
 
 -- 문제5.
 -- 월급이 14000 미만 10000 이상인 직원의 이름(first_name), 월급, 커미션퍼센트를 월급순(내림차순) 출력하세요.
@@ -58,16 +61,16 @@ SELECT * FROM employees ORDER BY LENGTH(job_id) DESC;
 
 -- 문제9.
 -- 정확하지 않지만, 지사가 있을 것으로 예상되는 나라들을 나라이름을 대문자로 출력하고 올림차순(ASC)으로 정렬해 보세요.
-
+SELECT UPPER(country_name)
+FROM countries
+ORDER BY country_name;
 
 -- 문제10.
 -- 입사일이 03/12/31 일 이전 입사한 직원의 이름, 월급, 전화 번호, 입사일을 출력하세요.
 -- 전화번호는 545-343-3433 과 같은 형태로 출력하세요.
 SELECT first_name,
         salary,
-        SUBSTR(phone_number, 1, 4) || ' - ' ||
-        SUBSTR(phone_number, 5, 3) || ' - ' ||
-        SUBSTR(phone_number, 8, 4),
+        REPLACE(phone_number, '.', '-'),
         hire_date
 FROM employees, dual
 WHERE hire_date <= '03/12/31';
