@@ -116,10 +116,10 @@ FROM employees
 WHERE commission_pct IS NULL;
 
 -- 연습문제: 담당매니저가 없고, 커미션을 받지 않는 사원의 목록
-SELECT first_name, manager_id, commissioin_pct 
+SELECT first_name, manager_id, commission_pct 
 FROM employees
 WHERE manager_id IS NULL AND
-    commision_pct IS NULL;
+    commission_pct IS NULL;
 
 -- 집합 연산자: IN
 -- ANY와 ALL은 단독으로 사용되지 않는다
@@ -156,7 +156,7 @@ WHERE first_name LIKE '%am%';
 -- 연습문제: 이름에 두번째 글자가 a인 사원의 이름과 연봉
 SELECT first_name, salary * 12
 FROM employees
-WHERE first_name LIKE '%a%';
+WHERE first_name LIKE '_a%';
 
 -- ORDER BY: 정렬
 -- 오름차순: 작은 값 -> 큰 값 ASC(default) 생략 가능
@@ -318,10 +318,21 @@ SELECT first_name, job_id, salary, SUBSTR(job_id, 1, 2),
     bonus
 FROM employees;
 
--- 연습문제: 직원의 이름, 부서, 팀을 출력
--- 팀
+-- 연습문제: 직원의 이름, 부서, 팀을 출력하세요
+-- 팀은 코드로 결정하며 다음과 같이 그룹 이름을 출력합니다
 -- 부서 코드: 10 ~ 30 -> A-GROUP
 -- 부서 코드: 40 ~ 50 -> B-GROUP
 -- 부서 코드: 60 ~ 100- > C-GROUP
--- 나머지: REMAINDER
+-- 나머지 부서: REMAINDER
+SELECT first_name, department_id,
+       CASE WHEN department_id BETWEEN 10 AND 30 THEN 'A-GROUP'
+            WHEN department_id BETWEEN 40 AND 50 THEN 'B-GROUP'
+            WHEN department_id BETWEEN 60 AND 100 THEN 'C-GROUP'
+            ELSE 'REMAINDER'
+       END team
+FROM employees;
+
+
+
+
 
