@@ -129,3 +129,82 @@ SELECT emp.employee_id,
 FROM employees emp, employees man
 WHERE emp.manager_id = man.employee_id (+) -- LEFT OUTER JOIN // 짝이 없어도 출력
 ORDER BY emp.employee_id;
+
+-------------
+-- 집계 함수
+-------------
+-- :여러 레코드로부터 데이터를 수집, 하나의 결과 행을 반환
+
+-- count: 갯수 세기
+SELECT count(*) FROM employees; -- 특정 컬럼이 아닌 레코드의 갯수를 센다
+
+SELECT count(commision_pct) FROM employees; -- 해당 컬럼이 null이 아닌 갯수
+SELECT count(*) FROM employees
+WHERE commission_pct IS NOT NULL;
+
+-- sum 합계
+-- 급여의 합계
+SELECT sum(salary) FROM employees;
+
+-- avg: 평균
+-- 급여의 평균
+SELECT avg(salary) FROM employees;
+-- avg 함수는 null값은 집계에서 제외
+
+-- 사원들의 평균 커미션 비율
+SELECT avg(commission_pct) FROM employees; -- 22%
+SELECT avg(nvl(commission_pct, 0)) FROM employees; -- 7%
+-- -> 통계 자료를 낼 때 null값 주의
+
+-- min/max: 최소값, 최대값
+SELECT MIN(salary), MAX(salary), AVG(salary), MEDIAN(salary)
+FROM employees;
+
+-- 일반적 오류
+SELECT department_id, AVG(salary)
+FROM employees;
+-- -> AVG(salary)는 집계함수이므로 단일행, 그러므로 department_id와 같이 쓸 수 없음
+-- 수정: 집계 함수
+SELECT department_id, AVG(salary)
+FROM employees
+GROUP BY department_id
+ORDER BY department_id;
+
+-- 집계 함수를 사용한 SELECT문의 컬럼 목록에는 GROUP BY에 참여한 필드, 집계 함수만 올 수 있음
+
+-- 부서별 평균 급여를 출력
+-- 평균 급여가 7000 이상인 부서만 뽑아봅시다.
+SELECT department_id, AVG(salary)
+FROM employees
+WHERE AVG(salary) >= 7000
+GROUP BY department_id; -- ERROR
+-- -> 집계 함수 실행 이전에 WHERE절을 검사하기 때문에 집계 함수는 WHERE절에서 사용할 수 없음
+-- 집계 함수 실행 이후에 조건 검사하려면 HAVING절을 이용
+
+SELECT department_id, ROUND(AVG(salary), 2)
+FROM employees
+GROUP BY department_id
+    HAVING AVG(salary) >= 7000
+ORDER BY department_id;
+
+-------------
+-- 분석 함수
+-------------
+--ROLLUP
+-- :그룸핑된 결과에 대한 상세 요약을 제공하는 기능
+-- 일종의 ITEM Total
+SELECT department_id,
+        job_id,
+        SUM(salary)
+FROM employees
+GROUP BY ROlLUP(department_id, job_id);
+
+-------------
+-- CUBE 함수
+-------------
+-- Cross Table에 대한 summary를 함께 추출
+-- ROLLUP 함수에서 추출되는 Item Total과 함께 Column Total 값을 함께 추출
+SELECT department_id, job_id, SUM(salary)
+FROM employees
+GROUP BY CUBE(department_id, job_id)
+ORDER BY department_id;
