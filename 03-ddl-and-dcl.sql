@@ -73,5 +73,47 @@ CREATE TABLE book (
 
 SELECT * FROM tab;
 DESC book;
-    
 
+-- 서브쿼리를 이용한 테이블 생성
+-- HR스키마의 employees 테이블의 일부 데이터를 추출, 새 테이블 생성
+SELECT * FROM HR.employees;
+-- job_id가 IT관련 직원들만 뽑아내어 새 테이블 생성
+CREATE TABLE it_emps AS (
+    SELECT * FROM hr.employees
+    WHERE job_id LIKE 'IT_%'
+);
+
+DESC IT_EMPS;
+SELECT * FROM IT_EMPS;
+
+DROP TABLE IT_EMPS;
+
+-- author 테이블 추가
+CREATE TABLE author (
+    author_id NUMBER(10),
+    author_name VARCHAR2(50) NOT NULL,
+    author_desc VARCHAR2(500),
+    PRIMARY KEY (author_id) -- 테이블 제약    
+);
+
+-- book 테이블의 author 컬럼 지우기
+-- 나중에 author 테이블과 FK 연결
+DESC book;
+ALTER TABLE book DROP COLUMN author;
+-- author테이블 참조를 위한 컬럼 author_id 추가
+ALTER TABLE book ADD (author_id NUMBER(10));
+-- book 테이블의 book_id도 NUMBER(10)으로 변경
+ALTER TABLE book MODIFY (book_id NUMBER(10));
+
+DESC book;
+DESC author;
+
+-- book.book_id에 PK 제약조건 부여
+ALTER TABLE book
+ADD CONSTRAINT pk_book_id PRIMARY KEY (book_id);
+
+-- book.author_id를 author_author_id를 참조하도록 제약
+ALTER TABLE book -- 북테이블 수정
+ADD CONSTRAINT fk_author_id FOREIGN KEY (author_id) -- 제약 조건 추가
+                            REFERENCES author(author_id)
+                            ON DELETE CASCADE;
