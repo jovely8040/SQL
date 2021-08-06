@@ -53,4 +53,25 @@ GRANT select ON HR.EMPLOYEES TO C##BITUSER;
 -- 전체 권한 부여시
 -- GRANT all privileges ...
 
+-------
+--DDL
+-------
+-- 이후 C##BITUSER로 진행
+
+-- 현재 내가 소유한 테이블 목록 확인
+SELECT * FROM tab;
+-- 현재 나에게 주어진 ROLE을 조회
+SELECT * FROM USER_ROLE_PRIVS;
+
+-- CREATE TABLE: 테이블 생성
+CREATE TABLE book (
+    book_id NUMBER(5),
+    title VARCHAR2(50),
+    author VARCHAR2(10),
+    pub_date DATE DEFAULT SYSDATE 
+);
+
+SELECT * FROM tab;
+DESC book;
+    
 
