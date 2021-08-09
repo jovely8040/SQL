@@ -66,3 +66,45 @@ SELECT * FROM author;
 UPDATE book_detail SET author_name = '소설가'; -- ERROR
 
 -- VIEW의 삭제
+
+-- book_detail은 book, author 테이블을 기반으로 함
+DROP VIEW book_detail; -- VIEW 삭제
+
+SELECT * FROM tab;
+
+-- VIEW 확인을 위한 DICTIONARY
+SELECT * FROM USER_VIEWS;
+SELECT * FROM USER_OBJECTS;
+
+SELECT object_name, object_type, status FROM USER_OBJECTS
+WHERE object_type='VIEW';
+
+-- INDEX : 검색 속도 증가
+-- INSERT, UPDATE, DELETE -> 인덱스의 갱신 발생
+-- HR.employees 테이블 복사 -> s_emp 테이블 생성
+CREATE TABLE s_emp
+    AS SELECT * FROM HR.employees;
+
+SELECT * FROM s_emp;
+
+-- s_emp.employee_id에 UNIQUE_INDEX 부여
+CREATE UNIQUE INDEX s_emp_id
+    ON s_emp (employee_id);
+
+-- INDEX 위한 DICTIONARY
+SELECT * FROM USER_INDEXES;
+SELECT * FROM USER_IND_COLUMNS;
+
+-- 어느 테이블에 어느 컬럼에 S_EMP_ID가 부여되었는가?
+SELECT t.index_name, t.table_name, c.column_name, c.column_position
+FROM USER_INDEXES t, USER_IND_COLUMNS c
+WHERE t.index_name = c.index_name AND
+    t.table_name = 'S_EMP';
+
+SELECT * FROM s_emp;
+
+-- 인덱스 삭제
+DROP INDEX s_emp_id;
+SELECT * FROM USER_INDEXES;
+
+-- 인덱스는 테이블과 독립적: 인덱스 삭제해도 테이블 데이터는 남아 있다.
